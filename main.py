@@ -5,17 +5,17 @@ import sys
 import torch
 import random
 import numpy as np
-import gym
 import datetime
-import copy
 from hiro.utils import listdirs, record_experience_to_csv, _is_update, Logger
 from hiro.agent import HiroAgent
-
+import copy
+from envs import EnvWithGoal
+from envs.create_maze_env import create_maze_env
 
 def run_evaluation(config, env, agent, fg):
     agent.load(episode=-1)
 
-    rewards, success_rate = agent.evaluate_policy(env, fg, config["eval_episodes"], config["render"],
+    rewards, success_rate = agent.evaluate_policy(env, config["eval_episodes"], config["render"],
                                                   config["save_video"], config["sleep"])
 
     print('mean:{mean:.2f}, \
@@ -29,21 +29,20 @@ def run_evaluation(config, env, agent, fg):
 
 
 class Trainer():
-    def __init__(self, config, fg, env, agent, experiment_name):
+    def __init__(self, config, env, agent, experiment_name):
         self.config = config
         self.env = env
         self.agent = agent
         log_path = os.path.join(config["log_path"], experiment_name)
         self.logger = Logger(log_path=log_path)
-        self.fg_eval = fg
 
     def train(self):
         global_step = 0
 
         for e in np.arange(self.config["num_episode"])+1:
             obs = self.env.reset()
-            fg = np.random.uniform(env.observation_space.low, env.observation_space.high)[:-1] # sample a final goal
-            s = obs
+            fg = obs['desired_goal']
+            s = obs['observation']
             done = False
 
             step = 0
@@ -82,9 +81,9 @@ class Trainer():
     def evaluate(self, e):
         # Print
         if _is_update(e, config["print_freq"]):
-            # agent = copy.deepcopy(self.agent)
-            # rewards, success_rate = agent.evaluate_policy(self.env)
-            rewards, success_rate = self.agent.evaluate_policy(self.env, self.fg_eval, eval_episodes=1, render=True)
+            agent = copy.deepcopy(self.agent)
+            rewards, success_rate = agent.evaluate_policy(self.env, render=True)
+            # rewards, success_rate = self.agent.evaluate_policy(self.env, eval_episodes=1, render=True)
             self.logger.write('Success Rate', success_rate, e)
 
             print('episode:{episode:05d}, mean:{mean:.2f}, std:{std:.2f}, median:{median:.2f}, success:{success:.2f}'.format(
@@ -110,7 +109,7 @@ if __name__ == "__main__":
             experiment_name = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
     print(experiment_name)
 
-    env = gym.make(config["env_name"])
+    env = EnvWithGoal(create_maze_env('AntMaze'))
     # environment setting
     np.random.seed(config['seed'])
     random.seed(config['seed'])
@@ -122,8 +121,8 @@ if __name__ == "__main__":
     state_dim = env.observation_space.shape[0]
     action_dim = env.action_space.shape[0]
     low_action_space = env.action_space
-    goal_dim = 120
-    subgoal_dim = 120
+    goal_dim = 2
+    subgoal_dim = 15
 
     agent = HiroAgent(
         state_dim=state_dim,
@@ -143,14 +142,12 @@ if __name__ == "__main__":
         buffer_freq=config["buffer_freq"],
         train_freq=config["train_freq"])
 
-    fg_eval = np.r_[[1.265]*60, [1.0] * 60]
-
     # Run training or evaluation
     if not config["eval"]:
         # Record this experiment with arguments to a CSV file
         record_experience_to_csv(config, experiment_name)
         # Start training
-        trainer = Trainer(config, fg_eval, env, agent, experiment_name)
+        trainer = Trainer(config, env, agent, experiment_name)
         trainer.train()
     if config["eval"]:
-        run_evaluation(config, env, agent, fg_eval)
+        run_evaluation(config, env, agent)

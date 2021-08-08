@@ -50,8 +50,8 @@ class SacController:
             self.log_alpha = torch.zeros(1, requires_grad=True, device=self.device)
             self.alpha_optim = Adam([self.log_alpha], lr=actor_lr)
 
-        self._initialized = False
         self._initialize_target_networks()
+        self._initialized = False
 
         self.updates = 0
 

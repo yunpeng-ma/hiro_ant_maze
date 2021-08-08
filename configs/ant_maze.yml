@@ -1,0 +1,28 @@
+alpha: 0.2
+automatic_entropy_tuning: true
+cores: 2
+env_name: ant_maze
+exp_name:
+eval: false
+model_path: model
+log_path: log
+gamma: 0.99
+hidden_size: 300
+actor_lr: 0.0001
+critic_lr: 0.001
+#num_steps: 3000000
+num_episode: 25000
+load_episode: -1
+
+start_training_steps: 2500
+replay_size: 200000
+batch_size: 100
+buffer_freq: 10 # how many time steps' interval between two observations observed by high controller
+train_freq: 10 # How many steps delay of high controller after training low controller
+print_freq: 250
+write_freq: 25
+model_save_freq: 2000
+
+target_update_interval: 1
+updates_per_step: 1
+seed: 2021

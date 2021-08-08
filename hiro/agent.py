@@ -211,23 +211,23 @@ class HiroAgent(Agent):
 
     def train(self, global_step):
         losses = {}
-        td_errors = {}
+        params = {}
 
         # print("The final goal is:", self.fg)
 
         if global_step >= self.start_training_steps:
-            loss, td_error = self.low_con.train(self.replay_buffer_low)
+            loss, param = self.low_con.train(self.replay_buffer_low)
             losses.update(loss)
-            td_errors.update(td_error)
+            params.update(param)
 
             if global_step % self.train_freq == 0:
-                loss, td_error = self.high_con.train(self.replay_buffer_high, self.low_con)
+                loss, param = self.high_con.train(self.replay_buffer_high, self.low_con)
                 losses.update(loss)
-                td_errors.update(td_error)
+                params.update(param)
 
-        return losses, td_errors
+        return losses, params
 
-    def evaluate_policy(self, env, fg, eval_episodes=10, render=False, save_video=False, sleep=-1):
+    def evaluate_policy(self, env, eval_episodes=10, render=False, save_video=False, sleep=-1):
         if save_video:
             from OpenGL import GL
             env = gym.wrappers.Monitor(env, directory='video',
@@ -239,8 +239,8 @@ class HiroAgent(Agent):
         # env.evaluate = True
         for e in range(eval_episodes):
             obs = env.reset()
-            fg = fg
-            s = obs
+            fg = obs['desired_goal']
+            s = obs['observation']
             done = False
             reward_episode_sum = 0
             step = 0
@@ -260,11 +260,10 @@ class HiroAgent(Agent):
                 step += 1
                 self.end_step()
             else:
-                error = np.sqrt(np.sum(np.square(fg-s[:120])))
-                print("Error: %.2f" % error)
-                # print('Goal, Current: (%02.2f, %02.2f, %02.2f, %02.2f)     Error:%.2f'%(fg[0], fg[1], s[0], s[1], error))
+                error = np.sqrt(np.sum(np.square(fg-s[:2])))
+                print('Goal, Curr: (%02.2f, %02.2f, %02.2f, %02.2f)     Error:%.2f'%(fg[0], fg[1], s[0], s[1], error))
                 rewards.append(reward_episode_sum)
-                success += 1 if error <=1 else 0
+                success += 1 if error <=5 else 0
                 self.end_episode(e)
 
         env.evaluate = False
