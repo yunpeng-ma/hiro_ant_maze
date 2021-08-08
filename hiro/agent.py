@@ -30,7 +30,7 @@ class Agent():
 
     def evaluate_policy(self, env, eval_episodes=10, render=False, save_video=False, sleep=-1):
         if save_video:
-            from OpenGL import GL
+            # from OpenGL import GL
             env = gym.wrappers.Monitor(env, directory='video',
                                        write_upon_reset=True, force=True, resume=True, mode='evaluation')
             render = False
@@ -229,14 +229,14 @@ class HiroAgent(Agent):
 
     def evaluate_policy(self, env, eval_episodes=10, render=False, save_video=False, sleep=-1):
         if save_video:
-            from OpenGL import GL
+            # from OpenGL import GL
             env = gym.wrappers.Monitor(env, directory='video',
                                        write_upon_reset=True, force=True, resume=True, mode='evaluation')
             render = False
 
         success = 0
         rewards = []
-        # env.evaluate = True
+        env.evaluate = True
         for e in range(eval_episodes):
             obs = env.reset()
             fg = obs['desired_goal']
