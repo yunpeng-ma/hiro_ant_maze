@@ -42,6 +42,7 @@ class ReplayBuffer():
             torch.FloatTensor(self.not_done[ind]).to(self.device),
         )
 
+
 class LowReplayBuffer(ReplayBuffer):
     def __init__(self, state_dim, goal_dim, action_dim, buffer_size, batch_size):
         super(LowReplayBuffer, self).__init__(state_dim, goal_dim, action_dim, buffer_size, batch_size)
@@ -71,6 +72,7 @@ class LowReplayBuffer(ReplayBuffer):
             torch.FloatTensor(self.reward[ind]).to(self.device),
             torch.FloatTensor(self.not_done[ind]).to(self.device),
         )
+
 
 class HighReplayBuffer(ReplayBuffer):
     def __init__(self, state_dim, goal_dim, subgoal_dim, action_dim, buffer_size, batch_size, freq):
@@ -109,13 +111,13 @@ class HighReplayBuffer(ReplayBuffer):
 class SubgoalActionSpace(object):
     def __init__(self, dim):
         limits = np.array([-10, -10, -0.5, -1, -1, -1, -1,
-                    -0.5, -0.3, -0.5, -0.3, -0.5, -0.3, -0.5, -0.3])
+                           -0.5, -0.3, -0.5, -0.3, -0.5, -0.3, -0.5, -0.3])
         self.shape = (dim,1)
         self.low = limits[:dim]
         self.high = -self.low
 
     def sample(self):
-        return (self.high - self.low) * np.random.sample(self.high.shape) + self.low
+        return (self.high - self.low) * np.random.sample() + self.low
 
 class Subgoal(object):
     def __init__(self, dim=15):
