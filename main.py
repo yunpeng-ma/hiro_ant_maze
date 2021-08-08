@@ -12,7 +12,8 @@ import copy
 from envs import EnvWithGoal
 from envs.create_maze_env import create_maze_env
 
-def run_evaluation(config, env, agent, fg):
+
+def run_evaluation(config, env, agent):
     agent.load(episode=-1)
 
     rewards, success_rate = agent.evaluate_policy(env, config["eval_episodes"], config["render"],
@@ -109,7 +110,7 @@ if __name__ == "__main__":
             experiment_name = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
     print(experiment_name)
 
-    env = EnvWithGoal(create_maze_env('AntMaze'))
+    env = EnvWithGoal(create_maze_env(config['env_name']), config['env_name'])
     # environment setting
     np.random.seed(config['seed'])
     random.seed(config['seed'])
@@ -118,8 +119,8 @@ if __name__ == "__main__":
     torch.manual_seed(config['seed'])
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
-    state_dim = env.observation_space.shape[0]
-    action_dim = env.action_space.shape[0]
+    state_dim = env.state_dim
+    action_dim = env.action_dim
     low_action_space = env.action_space
     goal_dim = 2
     subgoal_dim = 15

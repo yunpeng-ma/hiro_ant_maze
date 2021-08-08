@@ -165,7 +165,7 @@ class HiroAgent(Agent):
 
         # Take action
         obs, r, done, _ = env.step(a)
-        n_s = obs
+        n_s = obs['observation']
 
         ## Higher Level Controller
         # Take random action for start_training steps
@@ -298,7 +298,9 @@ class HiroAgent(Agent):
 
     @staticmethod
     def low_reward(s, sg, n_s):
+        # print('s shape: %s, sg shape:%s' %(np.shape(s), np.shape(sg)))
         abs_s = s[:sg.shape[0]] + sg
+        # print('abs_s shape:', abs_s)
         return -np.sqrt(np.sum((abs_s - n_s[:sg.shape[0]])**2))
 
     def end_step(self):

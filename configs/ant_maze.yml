@@ -1,7 +1,7 @@
 alpha: 0.2
 automatic_entropy_tuning: true
 cores: 2
-env_name: ant_maze
+env_name: AntMaze
 exp_name:
 eval: false
 model_path: model
