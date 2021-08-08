@@ -1,0 +1,4 @@
+train,eval,render,save_video,sleep,eval_episodes,env,td3,num_episode,start_training_steps,writer_freq,subgoal_dim,load_episode,model_save_freq,print_freq,exp_name,model_path,log_path,policy_freq_low,policy_freq_high,buffer_size,batch_size,buffer_freq,train_freq,reward_scaling,date
+True,False,False,False,-1,5,AntMaze,False,25000,2500,25,15,-1,2000,250,,model,log,2,2,200000,100,10,10,0.1,20210808_095414
+True,False,False,False,-1,5,AntMaze,False,25000,2500,25,15,-1,2000,250,,model,log,2,2,200000,100,10,10,0.1,20210808_100124
+True,False,False,False,-1,5,AntMaze,False,25000,2500,25,15,-1,2000,250,,model,log,2,2,200000,100,10,10,0.1,20210808_100256
