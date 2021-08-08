@@ -82,9 +82,9 @@ class Trainer():
     def evaluate(self, e):
         # Print
         if _is_update(e, config["print_freq"]):
-            agent = copy.deepcopy(self.agent)
-            rewards, success_rate = agent.evaluate_policy(self.env, render=True)
-            # rewards, success_rate = self.agent.evaluate_policy(self.env, eval_episodes=1, render=True)
+            # agent = copy.deepcopy(self.agent)
+            # rewards, success_rate = agent.evaluate_policy(self.env, render=True)
+            rewards, success_rate = self.agent.evaluate_policy(self.env)
             self.logger.write('Success Rate', success_rate, e)
 
             print('episode:{episode:05d}, mean:{mean:.2f}, std:{std:.2f}, median:{median:.2f}, success:{success:.2f}'.format(
