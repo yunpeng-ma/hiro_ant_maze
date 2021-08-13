@@ -1,4 +1,5 @@
 gym
 torch
 numpy
-mujoco_py
+mujoco_py==1.50.1.68
+tensorboard
