@@ -47,7 +47,7 @@ class MazeEnv(gym.Env):
     model_cls = self.__class__.MODEL_CLASS
     if model_cls is None:
       raise "MODEL_CLASS unspecified!"
-    xml_path = os.path.join("envs", MODEL_DIR, model_cls.FILE)
+    xml_path = os.path.join('/Users/yunpeng/Documents/GitHub/hiro_ant_maze/envs', MODEL_DIR, model_cls.FILE)
     tree = ET.parse(xml_path)
     worldbody = tree.find(".//worldbody")
 

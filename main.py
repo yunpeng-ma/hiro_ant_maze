@@ -120,7 +120,7 @@ if __name__ == '__main__':
     parser.add_argument('--subgoal_dim', default=15, type=int)
     parser.add_argument('--load_episode', default=-1, type=int)
     parser.add_argument('--model_save_freq', default=2000, type=int, help='Unit = Episodes')
-    parser.add_argument('--print_freq', default=250, type=int, help='Unit = Episode')
+    parser.add_argument('--print_freq', default=10, type=int, help='Unit = Episode')
     parser.add_argument('--exp_name', default=None, type=str)
     # Model
     parser.add_argument('--model_path', default='model', type=str)
