@@ -9,6 +9,7 @@ from envs.create_maze_env import create_maze_env
 from hiro.hiro_utils import Subgoal
 from hiro.utils import Logger, _is_update, record_experience_to_csv, listdirs
 from hiro.models import HiroAgent, TD3Agent
+import wandb
 
 def run_evaluation(args, env, agent):
     agent.load(args.load_episode)
@@ -108,6 +109,8 @@ if __name__ == '__main__':
     parser.add_argument('--eval_episodes', type=float, default=5, help='Unit = Episode')
     parser.add_argument('--env', default='AntMaze', type=str)
     parser.add_argument('--td3', action='store_true')
+    parser.add_argument('--wandb', action='store_true')
+
 
     # Training
     parser.add_argument('--num_episode', default=25000, type=int)
@@ -188,6 +191,9 @@ if __name__ == '__main__':
     if args.train:
         # Record this experiment with arguments to a CSV file
         record_experience_to_csv(args, experiment_name)
+        if args.wandb:
+            wandb.login()
+            wandb.init(sync_tensorboard=True, name='hiro_td3_'+experiment_name, project="hiro_ant")
         # Start training
         trainer = Trainer(args, env, agent, experiment_name)
         trainer.train()
