@@ -121,25 +121,25 @@ class TD3Controller(object):
 
         # save file (e.g. model/2000/high_actor.h)
         torch.save(
-            self.actor.state_dict(), 
+            self.actor.state_dict(),
             os.path.join(model_path, self.name+"_actor.h5")
         )
         torch.save(
-            self.critic1.state_dict(), 
+            self.critic1.state_dict(),
             os.path.join(model_path, self.name+"_critic1.h5")
         )
         torch.save(
-            self.critic2.state_dict(), 
+            self.critic2.state_dict(),
             os.path.join(model_path, self.name+"_critic2.h5")
         )
 
     def load(self, episode):
         # episode is -1, then read most updated
-        if episode<0:
+        if episode < 0:
             episode_list = map(int, os.listdir(self.model_path))
             episode = max(episode_list)
 
-        model_path = os.path.join(self.model_path, str(episode)) 
+        model_path = os.path.join(self.model_path, str(episode))
 
         self.actor.load_state_dict(torch.load(
             os.path.join(model_path, self.name+"_actor.h5"))
@@ -155,7 +155,7 @@ class TD3Controller(object):
         self.total_it += 1
         with torch.no_grad():
             noise = (
-                torch.randn_like(actions) * self.policy_noise
+                    torch.randn_like(actions) * self.policy_noise
             ).clamp(-self.noise_clip, self.noise_clip)
 
             n_actions = self.actor_target(n_states, n_goals) + noise
@@ -195,11 +195,11 @@ class TD3Controller(object):
             self._update_target_network(self.critic2_target, self.critic2, self.tau)
             self._update_target_network(self.actor_target, self.actor, self.tau)
 
-            return {'actor_loss_'+self.name: actor_loss, 'critic_loss_'+self.name: critic_loss}, \
-                    {'td_error_'+self.name: td_error}
+            return {'actor_loss_'+self.name: actor_loss, 'critic_loss_'+self.name: critic_loss},\
+                   {'td_error_'+self.name: td_error}
 
-        return {'critic_loss_'+self.name: critic_loss}, \
-                    {'td_error_'+self.name: td_error}
+        return {'critic_loss_' + self.name: critic_loss}, \
+               {'td_error_' + self.name: td_error}
 
     def train(self, replay_buffer, iterations=1):
         states, goals, actions, n_states, rewards, not_done = replay_buffer.sample()
@@ -426,16 +426,16 @@ class Agent():
 
 class TD3Agent(Agent):
     def __init__(
-        self,
-        state_dim,
-        action_dim,
-        goal_dim,
-        scale,
-        model_path,
-        model_save_freq,
-        buffer_size,
-        batch_size,
-        start_training_steps):
+            self,
+            state_dim,
+            action_dim,
+            goal_dim,
+            scale,
+            model_path,
+            model_save_freq,
+            buffer_size,
+            batch_size,
+            start_training_steps):
 
         self.con = TD3Controller(
             state_dim=state_dim,
@@ -463,7 +463,7 @@ class TD3Agent(Agent):
                 a = self._choose_action_with_noise(s)
         else:
             a = self._choose_action(s)
-        
+
         obs, r, done, _ = env.step(a)
         n_s = obs['observation']
 
@@ -591,7 +591,7 @@ class HiroAgent(Agent):
                 n_sg = self._choose_subgoal_with_noise(step, s, self.sg, n_s)
         else:
             n_sg = self._choose_subgoal(step, s, self.sg, n_s)
-        
+
         self.n_sg = n_sg
 
         return a, r, n_s, done
@@ -674,7 +674,7 @@ class HiroAgent(Agent):
         self.sg = self.n_sg
 
     def end_episode(self, episode, logger=None):
-        if logger: 
+        if logger:
             # log
             logger.write('reward/Intrinsic Reward', self.episode_subreward, episode)
 
